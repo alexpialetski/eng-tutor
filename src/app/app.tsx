@@ -1,49 +1,54 @@
-import NxWelcome from './nx-welcome';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import { useUser } from '../features/progress/model/useProgress';
+import { WelcomePage } from '../pages/welcome/WelcomePage';
+import { BookSelectionPage } from '../pages/book-selection/BookSelectionPage';
+import { QuizPage } from '../pages/quiz/QuizPage';
+import { ResultsPage } from '../pages/results/ResultsPage';
 
-import { Route, Routes, Link } from 'react-router-dom';
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useUser();
+
+  if (loading) {
+    return <div>Загрузка...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+}
 
 export function App() {
   return (
-    <div>
-      <NxWelcome title="eng-tutor" />
-
-      {/* START: routes */}
-      {/* These routes and navigation have been generated for you */}
-      {/* Feel free to move and update them to fit your needs */}
-      <br />
-      <hr />
-      <br />
-      <div role="navigation">
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/page-2">Page 2</Link>
-          </li>
-        </ul>
-      </div>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              This is the generated root route.{' '}
-              <Link to="/page-2">Click here for page 2.</Link>
-            </div>
-          }
-        />
-        <Route
-          path="/page-2"
-          element={
-            <div>
-              <Link to="/">Click here to go back to root page.</Link>
-            </div>
-          }
-        />
-      </Routes>
-      {/* END: routes */}
-    </div>
+    <Routes>
+      <Route path="/" element={<WelcomePage />} />
+      <Route
+        path="/books"
+        element={
+          <ProtectedRoute>
+            <BookSelectionPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/books/:bookId"
+        element={
+          <ProtectedRoute>
+            <QuizPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/books/:bookId/results"
+        element={
+          <ProtectedRoute>
+            <ResultsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 

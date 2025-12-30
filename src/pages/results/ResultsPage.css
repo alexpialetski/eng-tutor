@@ -1,0 +1,30 @@
+.results-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.result-screen {
+  text-align: center;
+}
+
+.score-big {
+  font-size: 3em;
+  color: var(--primary);
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+.final-msg {
+  font-size: 1.1em;
+  line-height: 1.6;
+  margin: 30px 0;
+  color: var(--text);
+}
+
+.result-actions {
+  margin-top: 30px;
+}
+
