@@ -36,9 +36,15 @@ export default defineConfig(() => ({
     environment: 'jsdom',
     include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
+    setupFiles: ['./src/test-setup.ts'],
     coverage: {
       reportsDirectory: './coverage/eng-tutor',
       provider: 'v8' as const,
+    },
+    css: {
+      modules: {
+        classNameStrategy: 'non-scoped',
+      },
     },
   },
 }));

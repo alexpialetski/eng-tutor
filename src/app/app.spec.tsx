@@ -1,9 +1,13 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-
+import { resetDatabase } from '../test-utils';
 import App from './app';
 
 describe('App', () => {
+  beforeEach(async () => {
+    await resetDatabase();
+  });
+
   it('should render successfully', () => {
     const { baseElement } = render(
       <BrowserRouter>
@@ -13,14 +17,13 @@ describe('App', () => {
     expect(baseElement).toBeTruthy();
   });
 
-  it('should have a greeting as the title', () => {
-    const { getAllByText } = render(
+  it('should show welcome page on root route', () => {
+    render(
       <BrowserRouter>
         <App />
       </BrowserRouter>,
     );
-    expect(
-      getAllByText(new RegExp('Welcome eng-tutor', 'gi')).length > 0,
-    ).toBeTruthy();
+    expect(screen.getByText(/Безмятежный Лотос/i)).toBeInTheDocument();
+    expect(screen.getByText(/Добро пожаловать/i)).toBeInTheDocument();
   });
 });
