@@ -1,5 +1,4 @@
 import React from 'react';
-import './ProgressBar.css';
 
 interface ProgressBarProps {
   progress: number; // 0-100
@@ -7,9 +6,9 @@ interface ProgressBarProps {
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
   return (
-    <div className="progress-bar">
+    <div className="w-full h-1.5 bg-gray-200 mb-8 rounded-sm overflow-hidden">
       <div
-        className="progress-fill"
+        className="h-full bg-secondary transition-all duration-500 ease-out"
         style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
       />
     </div>

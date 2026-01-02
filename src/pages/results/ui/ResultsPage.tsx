@@ -6,8 +6,6 @@ import { SectionStats } from '~/features/analytics';
 import { Button } from '~/shared/ui/Button';
 import { Card } from '~/shared/ui/Card';
 
-import './ResultsPage.css';
-
 export const ResultsPage: React.FC = () => {
   const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
@@ -68,39 +66,44 @@ export const ResultsPage: React.FC = () => {
   };
 
   return (
-    <div className="results-container">
+    <div className="flex justify-center items-center min-h-screen p-5">
       <Card>
-        <div className="result-screen">
+        <div className="text-center">
           <h2>Испытание завершено!</h2>
           <p>Твой уровень духовной силы:</p>
-          <div className="score-big">
+          <div className="text-5xl text-primary my-5 font-bold">
             {score} / {totalQuestions}
           </div>
-          <p className="final-msg">{message}</p>
+          <p className="text-lg leading-relaxed my-8 text-text">{message}</p>
 
           {statsBefore.length > 0 && statsAfter.length > 0 && (
-            <div className="stats-comparison">
-              <h3>Изменение статистики</h3>
-              <div className="stats-comparison-grid">
+            <div className="my-8 p-5 bg-primary/5 rounded-lg border border-primary">
+              <h3 className="text-primary text-xl mb-5 font-normal">
+                Изменение статистики
+              </h3>
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
                 {Array.from(allSections).map((section) => {
                   const change = getStatChange(section);
                   if (!change) return null;
 
                   return (
-                    <div key={section} className="stat-comparison-card">
-                      <div className="stat-comparison-section">
+                    <div
+                      key={section}
+                      className="bg-white p-4 rounded-md border border-gray-300"
+                    >
+                      <div className="font-bold text-primary mb-2.5 text-sm">
                         {getSectionName(section as any)}
                       </div>
                       {change.type === 'new' && (
-                        <div className="stat-change new">
-                          <span className="stat-change-icon">✨</span>
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-sm font-medium bg-blue-100 text-blue-500">
+                          <span className="text-base">✨</span>
                           <span>
                             Новый раздел: {Math.round(change.accuracy! * 100)}%
                           </span>
                         </div>
                       )}
                       {change.type === 'removed' && (
-                        <div className="stat-change removed">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-sm font-medium bg-gray-100 text-gray-500">
                           <span>Раздел удален</span>
                         </div>
                       )}
@@ -108,33 +111,33 @@ export const ResultsPage: React.FC = () => {
                         change.type === 'regress' ||
                         change.type === 'same') && (
                         <>
-                          <div className="stat-comparison-values">
-                            <span className="stat-before">
+                          <div className="flex items-center justify-between gap-2 my-2.5 text-sm">
+                            <span className="text-gray-600">
                               Было: {Math.round(change.before! * 100)}%
                             </span>
-                            <span className="stat-arrow">
+                            <span className="text-lg text-gray-500">
                               {change.type === 'progress'
                                 ? '→'
                                 : change.type === 'regress'
                                   ? '←'
                                   : '='}
                             </span>
-                            <span className="stat-after">
+                            <span className="text-gray-800 font-medium">
                               Стало: {Math.round(change.after! * 100)}%
                             </span>
                           </div>
                           <div
-                            className={`stat-change ${
+                            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded text-sm font-medium ${
                               change.type === 'progress'
-                                ? 'progress'
+                                ? 'bg-green-100 text-green-600'
                                 : change.type === 'regress'
-                                  ? 'regress'
-                                  : 'same'
+                                  ? 'bg-red-100 text-red-500'
+                                  : 'bg-gray-100 text-gray-500'
                             }`}
                           >
                             {change.type === 'progress' && (
                               <>
-                                <span className="stat-change-icon">📈</span>
+                                <span className="text-base">📈</span>
                                 <span>
                                   +{Math.round(change.accuracyDiff! * 100)}%
                                 </span>
@@ -142,7 +145,7 @@ export const ResultsPage: React.FC = () => {
                             )}
                             {change.type === 'regress' && (
                               <>
-                                <span className="stat-change-icon">📉</span>
+                                <span className="text-base">📉</span>
                                 <span>
                                   -{Math.round(change.accuracyDiff! * 100)}%
                                 </span>
@@ -161,14 +164,14 @@ export const ResultsPage: React.FC = () => {
             </div>
           )}
 
-          <div className="result-actions">
+          <div className="mt-8">
             <Button onClick={() => navigate(`/books/${bookId}`)}>
               Пройти заново
             </Button>
             <Button
               onClick={() => navigate('/books')}
               variant="secondary"
-              style={{ marginTop: '10px' }}
+              className="mt-2.5"
             >
               Выбрать другую книгу
             </Button>

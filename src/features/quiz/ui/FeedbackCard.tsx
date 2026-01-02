@@ -3,8 +3,6 @@ import React from 'react';
 import { Question } from '~/entities/book';
 import { getRandomCongratulatoryMessage } from '~/shared/constants/messages';
 
-import './FeedbackCard.css';
-
 interface FeedbackCardProps {
   question: Question;
   isCorrect: boolean;
@@ -15,14 +13,20 @@ export const FeedbackCard: React.FC<FeedbackCardProps> = ({
   isCorrect,
 }) => {
   return (
-    <div className={`feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
+    <div
+      className={`mt-5 p-5 rounded-md animate-fadeIn ${
+        isCorrect
+          ? 'bg-correct/10 border-l-4 border-correct'
+          : 'bg-wrong/10 border-l-4 border-wrong'
+      }`}
+    >
       <h3
-        className="feedback-title"
-        style={{ color: isCorrect ? 'var(--correct)' : 'var(--wrong)' }}
+        className="mt-0 mb-2.5"
+        style={{ color: isCorrect ? '#4a7c59' : '#b84b4b' }}
       >
         {isCorrect ? 'Верно! ✨' : 'Ошибка 🥀'}
       </h3>
-      <p className="feedback-msg">
+      <p className="mb-4">
         {isCorrect ? (
           getRandomCongratulatoryMessage()
         ) : (
@@ -32,13 +36,13 @@ export const FeedbackCard: React.FC<FeedbackCardProps> = ({
           </>
         )}
       </p>
-      <div className="rule-box">
+      <div className="mt-4 text-sm bg-white/70 p-2.5 rounded">
         <strong>Правило:</strong>{' '}
         <span dangerouslySetInnerHTML={{ __html: question.rule }} />
       </div>
-      <div className="extra-examples">
+      <div className="mt-2.5 text-sm text-gray-700">
         <strong>Похожие примеры для запоминания:</strong>
-        <ul>
+        <ul className="pl-5 my-1">
           {question.examples.map((example, index) => (
             <li key={index} dangerouslySetInnerHTML={{ __html: example }} />
           ))}

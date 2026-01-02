@@ -2,9 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 
 import { getSectionName, SectionKey, SECTIONS } from '~/entities/book';
 
-import { db } from '../../lib/db';
-
-import './SectionStatsCard.css';
+import { db } from '../lib/db';
 
 const getAccuracyColor = (accuracy: number) => {
   if (accuracy >= 0.8) return 'var(--correct)';
@@ -34,15 +32,17 @@ const SectionStatCard: React.FC<{ section: SectionKey }> = ({ section }) => {
   }
 
   return (
-    <div className="stat-card">
-      <div className="stat-section">{getSectionName(stat.section)}</div>
+    <div className="bg-primary/5 p-4 rounded-md border border-primary text-center">
+      <div className="text-sm text-gray-600 mb-2">
+        {getSectionName(stat.section)}
+      </div>
       <div
-        className="stat-accuracy"
+        className="text-4xl font-bold my-2.5"
         style={{ color: getAccuracyColor(stat.accuracy) }}
       >
         {Math.round(stat.accuracy * 100)}%
       </div>
-      <div className="stat-details">
+      <div className="text-sm text-gray-500">
         {stat.correctCount} / {stat.totalCount}
       </div>
     </div>
@@ -50,9 +50,9 @@ const SectionStatCard: React.FC<{ section: SectionKey }> = ({ section }) => {
 };
 
 export const SectionStatsCard = () => (
-  <div className="stats-section">
-    <h2>Твоя статистика</h2>
-    <div className="stats-grid">
+  <div className="my-8 mb-10">
+    <h2 className="text-primary text-2xl mb-5 font-normal">Твоя статистика</h2>
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
       {SECTIONS.map((section) => (
         <SectionStatCard key={section} section={section} />
       ))}

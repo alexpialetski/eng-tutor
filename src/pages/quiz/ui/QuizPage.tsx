@@ -13,8 +13,6 @@ import { Button } from '~/shared/ui/Button';
 import { Card } from '~/shared/ui/Card';
 import { ProgressBar } from '~/shared/ui/ProgressBar';
 
-import './QuizPage.css';
-
 import { quizGenerator } from '../lib/quizGenerator';
 
 const MAX_QUESTIONS = 10;
@@ -151,7 +149,7 @@ export const QuizPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="quiz-container">
+      <div className="flex justify-center items-start min-h-screen p-5">
         <Card>
           <div>Generating personalized quiz...</div>
         </Card>
@@ -161,7 +159,7 @@ export const QuizPage: React.FC = () => {
 
   if (quizQuestions.length === 0) {
     return (
-      <div className="quiz-container">
+      <div className="flex justify-center items-start min-h-screen p-5">
         <Card>
           <div>All questions completed! Great job!</div>
           <Button onClick={() => navigate('/books')}>Back to Books</Button>
@@ -173,7 +171,7 @@ export const QuizPage: React.FC = () => {
   const currentQuestion = quizQuestions[currentIndex];
   if (!currentQuestion) {
     return (
-      <div className="quiz-container">
+      <div className="flex justify-center items-start min-h-screen p-5">
         <Card>
           <div>Loading question...</div>
         </Card>
@@ -189,17 +187,19 @@ export const QuizPage: React.FC = () => {
   const isEmptyAnswer = userAnswer.trim() === '';
 
   return (
-    <div className="quiz-container">
+    <div className="flex justify-center items-start min-h-screen p-5">
       <Card>
         <button
           onClick={() => navigate('/books')}
-          className="back-button"
+          className="absolute top-2.5 left-10 bg-transparent border border-secondary text-secondary px-4 py-2 rounded text-sm font-serif transition-all duration-300 z-10 hover:bg-secondary hover:text-white"
           aria-label="Назад к выбору книги"
         >
           Назад
         </button>
         <h1>Безмятежный Лотос</h1>
-        <div className="subtitle">Полный цикл подготовки (8 класс)</div>
+        <div className="text-center italic text-gray-600 mb-8 text-sm">
+          Полный цикл подготовки (8 класс)
+        </div>
 
         <ProgressBar progress={progress} />
 

@@ -3,10 +3,8 @@ import React from 'react';
 
 import { Card } from '~/shared/ui/Card';
 
-import { analyticsService } from '../../lib/analyticsService';
-import { db } from '../../lib/db';
-
-import './AnalyticsCard.css';
+import { analyticsService } from '../lib/analyticsService';
+import { db } from '../lib/db';
 
 export const AnalyticsCard: React.FC = () => {
   // Get daily progress from attempts table
@@ -83,9 +81,9 @@ export const AnalyticsCard: React.FC = () => {
   if (!overallStats || overallStats.totalAttempts === 0) {
     return (
       <Card>
-        <div className="analytics-empty">
+        <div className="text-center py-10 px-5 text-gray-600">
           <p>Пока нет данных</p>
-          <p className="analytics-empty-hint">
+          <p className="text-sm mt-2.5 italic">
             Пройди несколько тестов, чтобы увидеть статистику
           </p>
         </div>
@@ -95,46 +93,48 @@ export const AnalyticsCard: React.FC = () => {
 
   return (
     <Card>
-      <div className="analytics-container">
-        <h3>Общая аналитика</h3>
+      <div className="p-5">
+        <h3 className="text-primary text-2xl mb-5 font-normal">
+          Общая аналитика
+        </h3>
 
-        <div className="analytics-grid">
-          <div className="analytics-stat">
-            <div className="analytics-stat-label">Всего попыток</div>
-            <div className="analytics-stat-value">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4 mb-8">
+          <div className="bg-primary/5 p-4 rounded-md border border-primary text-center">
+            <div className="text-sm text-gray-600 mb-2">Всего попыток</div>
+            <div className="text-3xl font-bold text-primary">
               {overallStats.totalAttempts}
             </div>
           </div>
 
-          <div className="analytics-stat">
-            <div className="analytics-stat-label">Правильных ответов</div>
-            <div className="analytics-stat-value">
+          <div className="bg-primary/5 p-4 rounded-md border border-primary text-center">
+            <div className="text-sm text-gray-600 mb-2">Правильных ответов</div>
+            <div className="text-3xl font-bold text-primary">
               {overallStats.correctAttempts}
             </div>
           </div>
 
-          <div className="analytics-stat">
-            <div className="analytics-stat-label">Средний процент</div>
-            <div className="analytics-stat-value">
+          <div className="bg-primary/5 p-4 rounded-md border border-primary text-center">
+            <div className="text-sm text-gray-600 mb-2">Средний процент</div>
+            <div className="text-3xl font-bold text-primary">
               {overallStats.averageAccuracy.toFixed(1)}%
             </div>
           </div>
 
-          <div className="analytics-stat">
-            <div className="analytics-stat-label">Лучший день</div>
-            <div className="analytics-stat-value highlight">
+          <div className="bg-primary/5 p-4 rounded-md border border-primary text-center">
+            <div className="text-sm text-gray-600 mb-2">Лучший день</div>
+            <div className="text-3xl font-bold text-accent">
               {overallStats.bestDayAccuracy.toFixed(1)}%
             </div>
           </div>
 
           {trend && (
-            <div className="analytics-stat">
-              <div className="analytics-stat-label">
+            <div className="bg-primary/5 p-4 rounded-md border border-primary text-center">
+              <div className="text-sm text-gray-600 mb-2">
                 Тренд (последние 3 дня)
               </div>
               <div
-                className={`analytics-stat-value ${
-                  trend.isImproving ? 'trend-up' : 'trend-down'
+                className={`text-3xl font-bold ${
+                  trend.isImproving ? 'text-green-600' : 'text-red-500'
                 }`}
               >
                 {trend.isImproving ? '↑' : '↓'} {trend.value.toFixed(1)}%
@@ -144,27 +144,29 @@ export const AnalyticsCard: React.FC = () => {
         </div>
 
         {dailyProgress && dailyProgress.length > 0 && (
-          <div className="progress-timeline">
-            <h4>Прогресс по времени (последние 30 дней)</h4>
-            <div className="timeline-container">
+          <div className="mt-8">
+            <h4 className="text-primary text-lg mb-4 font-normal">
+              Прогресс по времени (последние 30 дней)
+            </h4>
+            <div className="flex flex-col gap-3">
               {dailyProgress.slice(-10).map((point, index) => {
                 const percentage =
                   point.total > 0 ? (point.correct / point.total) * 100 : 0;
                 return (
-                  <div key={index} className="timeline-point">
-                    <div className="timeline-date">
+                  <div key={index} className="flex items-center gap-4">
+                    <div className="min-w-[60px] text-sm text-gray-600 text-right">
                       {new Date(point.date).toLocaleDateString('ru-RU', {
                         day: '2-digit',
                         month: '2-digit',
                       })}
                     </div>
-                    <div className="timeline-bar">
+                    <div className="flex-1 h-6 bg-primary/10 rounded-xl overflow-hidden relative">
                       <div
-                        className="timeline-fill"
+                        className="h-full bg-gradient-to-r from-primary to-accent rounded-xl transition-all duration-300"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
-                    <div className="timeline-percentage">
+                    <div className="min-w-[50px] text-sm font-medium text-gray-800 text-left">
                       {percentage.toFixed(0)}%
                     </div>
                   </div>

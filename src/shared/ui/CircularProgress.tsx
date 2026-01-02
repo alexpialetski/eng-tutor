@@ -1,5 +1,4 @@
 import React from 'react';
-import './CircularProgress.css';
 
 interface CircularProgressProps {
   progress: number; // 0-100
@@ -21,11 +20,11 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
   const offset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className="circular-progress-container">
+    <div className="relative inline-flex items-center justify-center">
       <svg
         width={size}
         height={size}
-        className="circular-progress-svg"
+        className="-rotate-90"
       >
         {/* Background circle */}
         <circle
@@ -33,7 +32,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="var(--bg-secondary, #e0e0e0)"
+          stroke="#e0e0e0"
           strokeWidth={strokeWidth}
         />
         {/* Progress circle */}
@@ -42,18 +41,20 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="var(--accent, #4a90e2)"
+          stroke="#c6a664"
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          className="circular-progress-circle"
+          className="transition-all duration-300"
         />
       </svg>
-      <div className="circular-progress-text">
-        <div className="circular-progress-number">{completed}</div>
-        <div className="circular-progress-label">из {total}</div>
+      <div className="absolute flex flex-col items-center justify-center text-center">
+        <div className="text-2xl font-bold text-gray-800 leading-tight">
+          {completed}
+        </div>
+        <div className="text-xs text-gray-500 leading-none">из {total}</div>
       </div>
     </div>
   );

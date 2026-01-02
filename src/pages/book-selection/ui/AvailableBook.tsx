@@ -5,8 +5,6 @@ import { db } from '~/features/analytics';
 import { Button } from '~/shared/ui/Button';
 import { CircularProgress } from '~/shared/ui/CircularProgress';
 
-import './AvailableBook.css';
-
 import { Book } from '~/entities/book';
 
 interface AvailableBookProps {
@@ -29,9 +27,9 @@ export const AvailableBook: React.FC<AvailableBookProps> = ({ book }) => {
 
   if (!completedQuestionIds) {
     return (
-      <div className="book-card">
-        <h3>{book.title}</h3>
-        <p className="book-subtitle">{book.subtitle}</p>
+      <div className="bg-secondary/10 p-5 rounded-md border-2 border-secondary text-center">
+        <h3 className="text-primary mt-0 text-xl">{book.title}</h3>
+        <p className="italic text-gray-600 text-sm my-2.5">{book.subtitle}</p>
         <div>Loading...</div>
       </div>
     );
@@ -44,10 +42,13 @@ export const AvailableBook: React.FC<AvailableBookProps> = ({ book }) => {
       : 0;
 
   return (
-    <div key={book.id} className="book-card">
-      <h3>{book.title}</h3>
-      <p className="book-subtitle">{book.subtitle}</p>
-      <div className="book-progress-container">
+    <div
+      key={book.id}
+      className="bg-secondary/10 p-5 rounded-md border-2 border-secondary text-center"
+    >
+      <h3 className="text-primary mt-0 text-xl">{book.title}</h3>
+      <p className="italic text-gray-600 text-sm my-2.5">{book.subtitle}</p>
+      <div className="flex flex-col items-center gap-4 my-5">
         <CircularProgress
           progress={progressPercent}
           total={allQuestions.length}
@@ -55,8 +56,10 @@ export const AvailableBook: React.FC<AvailableBookProps> = ({ book }) => {
           size={100}
           strokeWidth={10}
         />
-        <div className="book-progress-info">
-          <p className="book-questions">{remaining} вопросов осталось</p>
+        <div className="text-center">
+          <p className="text-gray-500 text-sm mb-4">
+            {remaining} вопросов осталось
+          </p>
         </div>
       </div>
       <Button onClick={() => navigate(`/books/${book.id}`)} variant="primary">
