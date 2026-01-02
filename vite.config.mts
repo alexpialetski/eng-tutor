@@ -3,6 +3,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(() => ({
   base: '/eng-tutor/',
@@ -15,6 +19,11 @@ export default defineConfig(() => ({
   preview: {
     port: 4300,
     host: 'localhost',
+  },
+  resolve: {
+    alias: {
+      '~': path.resolve(__dirname, './src'),
+    },
   },
   plugins: [react(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
   // Uncomment this if you are using workers.

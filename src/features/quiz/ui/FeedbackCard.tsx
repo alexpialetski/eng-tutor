@@ -1,6 +1,8 @@
 import React from 'react';
-import { Question } from '../../../shared/types';
-import { getRandomCongratulatoryMessage } from '../../../shared/constants/messages';
+
+import { Question } from '~/entities/book';
+import { getRandomCongratulatoryMessage } from '~/shared/constants/messages';
+
 import './FeedbackCard.css';
 
 interface FeedbackCardProps {
@@ -45,4 +47,3 @@ export const FeedbackCard: React.FC<FeedbackCardProps> = ({
     </div>
   );
 };
-

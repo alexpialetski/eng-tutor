@@ -1,0 +1,37 @@
+.book-selection-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.subtitle {
+  text-align: center;
+  font-style: italic;
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 0.9em;
+}
+
+.analytics-section {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.books-section {
+  margin-top: 40px;
+}
+
+.books-section h2 {
+  color: var(--primary);
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  font-weight: normal;
+}
+
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}

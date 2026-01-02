@@ -1,53 +1,17 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
-import { useUser } from '../features/progress/model/useProgress';
-import { WelcomePage } from '../pages/welcome/WelcomePage';
-import { BookSelectionPage } from '../pages/book-selection/BookSelectionPage';
-import { QuizPage } from '../pages/quiz/QuizPage';
-import { ResultsPage } from '../pages/results/ResultsPage';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useUser();
-
-  if (loading) {
-    return <div>Загрузка...</div>;
-  }
-
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-}
+import { BookSelectionPage } from '../pages/book-selection';
+import { QuizPage } from '../pages/quiz';
+import { ResultsPage } from '../pages/results';
 
 export function App() {
   return (
     <Routes>
-      <Route path="/" element={<WelcomePage />} />
-      <Route
-        path="/books"
-        element={
-          <ProtectedRoute>
-            <BookSelectionPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/books/:bookId"
-        element={
-          <ProtectedRoute>
-            <QuizPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/books/:bookId/results"
-        element={
-          <ProtectedRoute>
-            <ResultsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/" element={<Navigate to="/books" replace />} />
+      <Route path="/books" element={<BookSelectionPage />} />
+      <Route path="/books/:bookId" element={<QuizPage />} />
+      <Route path="/books/:bookId/results" element={<ResultsPage />} />
+      <Route path="*" element={<Navigate to="/books" replace />} />
     </Routes>
   );
 }
