@@ -1,10 +1,10 @@
 /// <reference types='vitest' />
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
-import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
+import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -45,7 +45,7 @@ export default defineConfig(() => ({
     environment: 'jsdom',
     include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
-    setupFiles: ['./src/test-setup.ts'],
+    setupFiles: ['./src/test/test-setup.ts'],
     coverage: {
       reportsDirectory: './coverage/eng-tutor',
       provider: 'v8' as const,
