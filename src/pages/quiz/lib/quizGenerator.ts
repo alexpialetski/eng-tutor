@@ -12,8 +12,9 @@ const ERROR_BOOST = 3; // Multiplier for sections with lower success rates
  */
 export const quizGenerator = {
   /**
-   * Gets statistics and calculates weights for each section.
+   * Gets statistics and calculates weights for each section based on overall performance.
    * Lower success rate = higher weight (more likely to be selected).
+   * Uses overall performance across all books to determine which sections need more practice.
    * Uses compound index [section+isCorrect] for instant statistics.
    */
   async getSectionWeights(): Promise<Record<SectionKey, number>> {
@@ -29,8 +30,9 @@ export const quizGenerator = {
     // Use Promise.all for parallel queries (faster than sequential)
     await Promise.all(
       sections.map(async (section) => {
-        // Dexie count() is very fast using index [section+isCorrect]
+        // Dexie count() is very fast using compound index [section+isCorrect]
         // Convert boolean to number (1) for IndexedDB
+        // Query across all books for overall performance
         const correct = await db.attempts
           .where('[section+isCorrect]')
           .equals([section, 1])
@@ -55,19 +57,23 @@ export const quizGenerator = {
   /**
    * Generates a quiz of specified size with adaptive selection.
    * Algorithm:
-   * 1. Get IDs of questions answered correctly (to exclude them)
+   * 1. Get IDs of questions answered correctly (to exclude them) for this book
    * 2. Filter available questions from static data
-   * 3. Calculate section weights based on performance
+   * 3. Calculate section weights based on overall performance across all books
    * 4. Select questions using weighted random selection
    */
-  async getNewQuiz(allQuestions: Question[], size = 10): Promise<Question[]> {
+  async getNewQuiz(
+    allQuestions: Question[],
+    bookId: string,
+    size = 10,
+  ): Promise<Question[]> {
     return db.transaction('r', db.attempts, async () => {
-      // 1. Get IDs of questions answered correctly (mastered questions)
-      // Using toArray() and filtering in memory is efficient for small datasets
+      // 1. Get IDs of questions answered correctly (mastered questions) for this book
+      // Using compound index [bookId+isCorrect] for efficient filtering
       // Convert boolean to number (1) for IndexedDB
       const passedAttempts = await db.attempts
-        .where('isCorrect')
-        .equals(1)
+        .where('[bookId+isCorrect]')
+        .equals([bookId, 1])
         .toArray();
 
       // Create Set for O(1) lookup
@@ -85,7 +91,7 @@ export const quizGenerator = {
         return allQuestions.sort(() => 0.5 - Math.random()).slice(0, size);
       }
 
-      // 3. Get section weights based on performance
+      // 3. Get section weights based on overall performance across all books
       const weights = await this.getSectionWeights();
 
       // 4. Group candidates by section

@@ -1,11 +1,10 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useNavigate } from 'react-router-dom';
 
+import { Book } from '~/entities/book';
 import { db } from '~/features/analytics';
 import { Button } from '~/shared/ui/Button';
 import { CircularProgress } from '~/shared/ui/CircularProgress';
-
-import { Book } from '~/entities/book';
 
 interface AvailableBookProps {
   book: Book;
@@ -15,15 +14,16 @@ export const AvailableBook: React.FC<AvailableBookProps> = ({ book }) => {
   const allQuestions = book.getQuestions();
   const navigate = useNavigate();
 
-  // Use dexie-react-hooks to reactively get completed question IDs
+  // Use dexie-react-hooks to reactively get completed question IDs for this book
   const completedQuestionIds = useLiveQuery(async () => {
-    // Convert boolean to number (1) for IndexedDB - isCorrect stored as 0/1
+    // Query only attempts for this book that are correct
+    // Using compound index [bookId+isCorrect] for efficient filtering
     const correctAttempts = await db.attempts
-      .where('isCorrect')
-      .equals(1)
+      .where('[bookId+isCorrect]')
+      .equals([book.id, 1])
       .toArray();
     return new Set(correctAttempts.map((a) => a.questionId));
-  }, []);
+  }, [book.id]);
 
   if (!completedQuestionIds) {
     return (

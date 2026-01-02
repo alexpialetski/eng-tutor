@@ -16,9 +16,15 @@ export function useProgress() {
    * This is the source of truth for all analytics.
    */
   const recordAnswer = useCallback(
-    async (section: SectionKey, isCorrect: boolean, questionId: string) => {
+    async (
+      section: SectionKey,
+      isCorrect: boolean,
+      questionId: string,
+      bookId: string,
+    ) => {
       await db.attempts.add({
         questionId,
+        bookId,
         section,
         isCorrect: isCorrect ? 1 : 0,
         timestamp: Date.now(),
@@ -47,32 +53,47 @@ export function useProgress() {
   /**
    * Gets section statistics for adaptive selection.
    * Uses the attempts table to calculate accuracy per section.
+   * If bookId is provided, filters to only that book's attempts.
    */
-  const getSectionStats = useCallback(async (): Promise<SectionStats[]> => {
-    const stats = await Promise.all(
-      SECTIONS.map(async (section) => {
-        // Use compound index [section+isCorrect] for fast counting
-        // Convert boolean to number (1) for IndexedDB
-        const correct = await db.attempts
-          .where('[section+isCorrect]')
-          .equals([section, 1])
-          .count();
-        const total = await db.attempts
-          .where('section')
-          .equals(section)
-          .count();
+  const getSectionStats = useCallback(
+    async (bookId?: string): Promise<SectionStats[]> => {
+      const stats = await Promise.all(
+        SECTIONS.map(async (section) => {
+          let correct: number;
+          let total: number;
 
-        return {
-          section,
-          accuracy: total > 0 ? correct / total : 0,
-          correctCount: correct,
-          totalCount: total,
-        };
-      }),
-    );
+          if (bookId) {
+            // Use compound index [bookId+section+isCorrect] for book-specific stats
+            correct = await db.attempts
+              .where('[bookId+section+isCorrect]')
+              .equals([bookId, section, 1])
+              .count();
+            total = await db.attempts
+              .where('[bookId+section]')
+              .equals([bookId, section])
+              .count();
+          } else {
+            // Use compound index [section+isCorrect] for overall stats
+            correct = await db.attempts
+              .where('[section+isCorrect]')
+              .equals([section, 1])
+              .count();
+            total = await db.attempts.where('section').equals(section).count();
+          }
 
-    return stats;
-  }, []);
+          return {
+            section,
+            accuracy: total > 0 ? correct / total : 0,
+            correctCount: correct,
+            totalCount: total,
+          };
+        }),
+      );
+
+      return stats;
+    },
+    [],
+  );
 
   /**
    * Gets a snapshot of current statistics (synchronous version for immediate use).

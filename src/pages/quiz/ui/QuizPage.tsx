@@ -53,13 +53,14 @@ export const QuizPage: React.FC = () => {
         // Get all questions from book (static constants)
         const allQuestions = book.getQuestions();
 
-        // Save stats snapshot before quiz starts
-        const stats = await getSectionStats();
+        // Save stats snapshot before quiz starts (book-specific)
+        const stats = await getSectionStats(bookId);
         setStatsBeforeQuiz(stats);
 
         // Generate adaptive quiz (10 questions selected based on performance)
         const quiz = await quizGenerator.getNewQuiz(
           allQuestions,
+          bookId,
           MAX_QUESTIONS,
         );
         setQuizQuestions(quiz);
@@ -85,7 +86,11 @@ export const QuizPage: React.FC = () => {
   ) => {
     // Record attempt in database (for analytics and adaptive selection)
     // All data (including completed questions) is derived from attempts table
-    await recordAnswer(section, isCorrect, questionId);
+    if (!bookId) {
+      console.error('bookId is missing');
+      return;
+    }
+    await recordAnswer(section, isCorrect, questionId, bookId);
   };
 
   const checkAnswer = () => {
@@ -118,8 +123,8 @@ export const QuizPage: React.FC = () => {
 
     // Check if we've answered all questions in the quiz
     if (totalAnswered >= quizQuestions.length) {
-      // Get stats after quiz
-      const statsAfterQuiz = await getSectionStats();
+      // Get stats after quiz (book-specific)
+      const statsAfterQuiz = await getSectionStats(bookId);
       // Quiz complete - pass stats comparison to results page
       navigate(`/books/${bookId}/results`, {
         state: {
